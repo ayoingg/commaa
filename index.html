@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쉼표(,) - 10분 무자극 휴식</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        calmBg: '#F4F7F6',
+                        calmGreen: '#7FA99B',
+                        calmDark: '#1A1E24',
+                        calmCard: '#FFFFFF',
+                        calmAmber: '#E8A87C',
+                        calmSoftDark: '#2D3748'
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 기본 애니메이션 및 스타일 지정 */
+        body {
+            background-color: #F4F7F6;
+            color: #2D3748;
+            font-family: 'Pretendard', sans-serif;
+            transition: background-color 0.8s ease, color 0.8s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 펄스 애니메이션 (캐릭터 잔물결 효과) */
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.04); opacity: 1; }
+        }
+        .pulse-gentle {
+            animation: gentlePulse 4s infinite ease-in-out;
+        }
+
+        /* 어두운 휴식 모드 배경 */
+        .rest-mode-active {
+            background-color: #0F1318 !important;
+            color: #A0AEC0 !important;
+        }
+
+        /* 버튼 점수 선택 애니메이션 */
+        .rating-btn {
+            transition: all 0.2s ease;
+        }
+        .rating-btn.active {
+            background-color: #7FA99B !important;
+            color: white !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(127, 169, 155, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 select-none" id="appBody">
+
+    <!-- 메인 컨테이너 -->
+    <main class="w-full max-w-md my-auto flex flex-col items-center justify-center">
+
+        <!-- 1. 안내 & 메인 화면 (휴식 시작 전) -->
+        <section id="stepIntro" class="w-full text-center space-y-6">
+            <!-- 쉼표 캐릭터 SVG -->
+            <div class="relative w-32 h-32 mx-auto flex items-center justify-center">
+                <div class="absolute inset-0 bg-emerald-100 rounded-full blur-xl opacity-70 pulse-gentle"></div>
+                <svg class="relative z-10 w-28 h-28 transform hover:scale-105 transition-transform duration-300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 쉼표 캐릭터 바디 -->
+                    <path d="M50 15C33.4315 15 20 28.4315 20 45C20 61.5685 33.4315 75 50 75C53.5 75 56.5 82 50 88C45 92.5 38 93 35 91" stroke="#7FA99B" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+                    <!-- 캐릭터 눈 (감고 편안히 쉬는 모습) -->
+                    <path d="M36 43C38 46 42 46 44 43" stroke="#2D3748" stroke-width="3.5" stroke-linecap="round"/>
+                    <path d="M56 43C58 46 62 46 64 43" stroke="#2D3748" stroke-width="3.5" stroke-linecap="round"/>
+                    <!-- 미소 -->
+                    <path d="M47 52C49 54 51 54 53 52" stroke="#2D3748" stroke-width="3" stroke-linecap="round"/>
+                    <!-- 볼터치 -->
+                    <circle cx="34" cy="48" r="4" fill="#F8B195" opacity="0.7"/>
+                    <circle cx="66" cy="48" r="4" fill="#F8B195" opacity="0.7"/>
+                </svg>
+            </div>
+
+            <div class="space-y-2">
+                <h1 class="text-2xl font-bold text-gray-800 tracking-tight">잠시, 쉼표(,)가 필요할 때</h1>
+                <p class="text-sm text-gray-500 leading-relaxed max-w-xs mx-auto">
+                    공부에 지친 눈과 뇌를 위해<br>
+                    <span class="font-medium text-emerald-700">10분간 어떤 자극도 없는 휴식</span>을 시작해보세요.
+                </p>
+            </div>
+
+            <!-- 안내 박스 -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-left text-xs text-gray-600 space-y-2">
+                <div class="flex items-center font-semibold text-gray-700">
+                    <svg class="w-4 h-4 text-emerald-600 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    어떻게 휴식하나요?
+                </div>
+                <ul class="list-disc list-inside space-y-1 text-gray-500">
+                    <li>시작 전과 후에 마음 상태를 간단히 체크합니다.</li>
+                    <li>휴식이 시작되면 화면이 매우 어두워집니다.</li>
+                    <li>남은 시간은 화면을 터치할 때만 3초간 보입니다.</li>
+                </ul>
+            </div>
+
+            <button onclick="goToCheck('pre')" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all transform active:scale-95">
+                휴식 준비하기
+            </button>
+        </section>
+
+        <!-- 2. 휴식 전/후 상태 체크 화면 (공통 사용) -->
+        <section id="stepCheck" class="w-full hidden space-y-6">
+            <div class="text-center space-y-1">
+                <span id="checkStepBadge" class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold">휴식 전 체크</span>
+                <h2 id="checkTitle" class="text-xl font-bold text-gray-800">현재 상태는 어떤가요?</h2>
+                <p class="text-xs text-gray-400">솔직하게 느낀 대로 솔직한 점수를 솔직하게 골라주세요.</p>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-6">
+                <!-- 피로감 평가 -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium text-gray-700">⚡ 피로감</span>
+                        <span class="text-xs text-gray-400">(1: 전혀 안 피곤함 ~ 5: 매우 피곤함)</span>
+                    </div>
+                    <div class="flex justify-between gap-2" id="fatigueGroup">
+                        <button onclick="setScore('fatigue', 1)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">1</button>
+                        <button onclick="setScore('fatigue', 2)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">2</button>
+                        <button onclick="setScore('fatigue', 3)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">3</button>
+                        <button onclick="setScore('fatigue', 4)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">4</button>
+                        <button onclick="setScore('fatigue', 5)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">5</button>
+                    </div>
+                </div>
+
+                <!-- 편안함 평가 -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium text-gray-700">🍃 편안함</span>
+                        <span class="text-xs text-gray-400">(1: 불안/답답함 ~ 5: 아주 편안함)</span>
+                    </div>
+                    <div class="flex justify-between gap-2" id="comfortGroup">
+                        <button onclick="setScore('comfort', 1)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">1</button>
+                        <button onclick="setScore('comfort', 2)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">2</button>
+                        <button onclick="setScore('comfort', 3)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">3</button>
+                        <button onclick="setScore('comfort', 4)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">4</button>
+                        <button onclick="setScore('comfort', 5)" class="rating-btn flex-1 py-3 bg-gray-50 hover:bg-emerald-50 text-gray-600 font-medium rounded-xl border border-gray-200">5</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btnSubmitCheck" onclick="submitCheck()" disabled class="w-full py-4 bg-gray-300 text-white font-semibold rounded-2xl shadow transition-all cursor-not-allowed">
+                선택 완료
+            </button>
+        </section>
+
+        <!-- 3. 10분 무자극 휴식 타이머 화면 -->
+        <section id="stepTimer" class="w-full hidden flex-col items-center justify-center min-h-[70vh] text-center cursor-pointer select-none relative" onclick="peekTimer(event)">
+            <!-- 은은한 미니 캐릭터 -->
+            <div class="opacity-30 mb-8 pointer-events-none">
+                <svg class="w-16 h-16 mx-auto" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 15C33.4315 15 20 28.4315 20 45C20 61.5685 33.4315 75 50 75C53.5 75 56.5 82 50 88C45 92.5 38 93 35 91" stroke="#4A5568" stroke-width="12" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <!-- 기본 텍스트 (터치 안내) -->
+            <div id="timerHint" class="space-y-3 transition-opacity duration-500 pointer-events-none">
+                <p class="text-lg text-gray-400 font-light">눈을 감고 편안하게 쉬어보세요.</p>
+                <p class="text-xs text-gray-600">화면 어디든 터치하면 남은 시간이 3초간 보입니다.</p>
+            </div>
+
+            <!-- 디지털 타이머 (기본 숨김) -->
+            <div id="timerDisplay" class="hidden my-4 transition-all duration-300 transform scale-110 pointer-events-none">
+                <span id="timeText" class="text-6xl font-light tracking-wider text-emerald-400 font-mono">10:00</span>
+                <p class="text-xs text-gray-500 mt-2">남은 시간</p>
+            </div>
+
+            <!-- 조기 종료 버튼 -->
+            <div class="mt-16 z-20">
+                <button type="button" onclick="stopTimerEarly(event)" ontouchstart="stopTimerEarly(event)" class="px-5 py-2.5 text-xs text-gray-400 hover:text-gray-200 border border-gray-700 hover:border-gray-500 rounded-xl transition-all active:bg-gray-800">
+                    휴식 일찍 마치기
+                </button>
+            </div>
+
+            <!-- 편안한 앰비언트 음악 컨트롤러 추가 -->
+            <div class="mt-6 z-20 flex flex-col items-center space-y-2" onclick="event.stopPropagation()">
+                <div class="flex items-center space-x-3 bg-gray-900/60 backdrop-blur border border-gray-800 px-4 py-2 rounded-full">
+                    <button type="button" id="audioToggleBtn" onclick="toggleAudio(event)" class="text-xs text-emerald-400 hover:text-emerald-300 flex items-center space-x-1.5 focus:outline-none">
+                        <svg id="audioIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                        </svg>
+                        <span id="audioStatusText">음악 켜짐</span>
+                    </button>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.3" oninput="changeVolume(event)" class="w-16 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 결과 및 생각 기록 화면 -->
+        <section id="stepResult" class="w-full hidden space-y-6">
+            <div class="text-center space-y-2">
+                <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-2 text-emerald-600">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">10분 휴식이 완료되었어요</h2>
+                <p class="text-xs text-gray-500">지친 몸과 마음이 조금이라도 가벼워졌길 바랍니다.</p>
+            </div>
+
+            <!-- 휴식 전후 변화 카드 -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                <h3 class="text-sm font-semibold text-gray-700 border-b border-gray-100 pb-2">휴식 전후 내 마음 변화</h3>
+                
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <!-- 피로감 변화 -->
+                    <div class="bg-gray-50 p-3 rounded-xl">
+                        <span class="text-xs text-gray-500 block mb-1">⚡ 피로감</span>
+                        <div class="flex items-center justify-center space-x-2">
+                            <span id="resPreFatigue" class="text-base text-gray-400">0</span>
+                            <span class="text-xs text-gray-300">→</span>
+                            <span id="resPostFatigue" class="text-lg font-bold text-emerald-600">0</span>
+                        </div>
+                        <span id="fatigueDiff" class="text-[10px] text-emerald-600 mt-1 block"></span>
+                    </div>
+                    <!-- 편안함 변화 -->
+                    <div class="bg-gray-50 p-3 rounded-xl">
+                        <span class="text-xs text-gray-500 block mb-1">🍃 편안함</span>
+                        <div class="flex items-center justify-center space-x-2">
+                            <span id="resPreComfort" class="text-base text-gray-400">0</span>
+                            <span class="text-xs text-gray-300">→</span>
+                            <span id="resPostComfort" class="text-lg font-bold text-emerald-600">0</span>
+                        </div>
+                        <span id="comfortDiff" class="text-[10px] text-emerald-600 mt-1 block"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 생각 기록 (선택) -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+                <label for="thoughtInput" class="block text-sm font-semibold text-gray-700">
+                    휴식 후 떠오른 생각을 남겨보세요 <span class="text-xs font-normal text-gray-400">(선택)</span>
+                </label>
+                <textarea id="thoughtInput" rows="2" maxlength="120" placeholder="예: 머리가 조금 맑아졌다. 다시 집중해봐야지." class="w-full p-3 text-sm bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-emerald-500 resize-none transition-colors"></textarea>
+            </div>
+
+            <button onclick="finishSession()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl shadow-md transition-all transform active:scale-95">
+                완료하고 돌아가기
+            </button>
+        </section>
+    </main>
+
+    <!-- 하단 카피라이트/안내 -->
+    <footer id="appFooter" class="text-center text-xs text-gray-400 py-4">
+        <p>쉼표(,)는 어떠한 개인정보도 저장하거나 요청하지 않습니다.</p>
+    </footer>
+
+    <!-- JavaScript 로직 -->
+    <script>
+        // 전역 상태 변수
+        let currentMode = 'pre'; // 'pre' (휴식 전) | 'post' (휴식 후)
+        let scores = {
+            preFatigue: 0,
+            preComfort: 0,
+            postFatigue: 0,
+            postComfort: 0
+        };
+        let currentFatigue = 0;
+        let currentComfort = 0;
+
+        // 타이머 변수 (기본 10분 = 600초)
+        const TOTAL_SECONDS = 600;
+        let remainingSeconds = TOTAL_SECONDS;
+        let timerInterval = null;
+        let peekTimeout = null;
+
+        // --- Web Audio API 기반 편안한 앰비언트 음악 생성기 ---
+        let audioCtx = null;
+        let masterGain = null;
+        let isAudioPlaying = false;
+        let ambientOscillators = [];
+        let ambientInterval = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = 0.3; // 기본 볼륨
+                masterGain.connect(audioCtx.destination);
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // 부드럽고 따뜻한 앰비언트 코드 및 노이즈 재생
+        function startAmbientSound() {
+            try {
+                initAudio();
+                stopAmbientSound(); // 이전 소리 정리
+                isAudioPlaying = true;
+                updateAudioUI();
+
+                // 1. 핑크 노이즈 (따뜻하고 포근한 빗소리/아날로그 감성)
+                const bufferSize = audioCtx.sampleRate * 2;
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+                for (let i = 0; i < bufferSize; i++) {
+                    let white = Math.random() * 2 - 1;
+                    b0 = 0.99886 * b0 + white * 0.0555179;
+                    b1 = 0.99332 * b1 + white * 0.0750759;
+                    b2 = 0.96900 * b2 + white * 0.1538520;
+                    b3 = 0.86650 * b3 + white * 0.3104856;
+                    b4 = 0.55000 * b4 + white * 0.5329522;
+                    b5 = -0.7616 * b5 - white * 0.0168980;
+                    output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                    output[i] *= 0.04; // 부드럽게
+                    b6 = white * 0.115926;
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = noiseBuffer;
+                noise.loop = true;
+
+                // 저주파 필터 (부드러운 소리로 커스텀)
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(400, audioCtx.currentTime);
+
+                noise.connect(filter);
+                filter.connect(masterGain);
+                noise.start();
+                ambientOscillators.push(noise);
+
+                // 2. 아늑한 신디사이저 패드 음음 (F 펜타토닉 잔잔한 메디테이션 톤)
+                const notes = [174.61, 220.00, 261.63, 329.63, 392.00]; // F3, A3, C4, E4, G4
+                const playPadTone = () => {
+                    if (!isAudioPlaying || !audioCtx) return;
+                    const osc = audioCtx.createOscillator();
+                    const toneGain = audioCtx.createGain();
+                    
+                    const freq = notes[Math.floor(Math.random() * notes.length)];
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                    // 페이드 인 / 아웃 효과
+                    const now = audioCtx.currentTime;
+                    toneGain.gain.setValueAtTime(0, now);
+                    toneGain.gain.linearRampToValueAtTime(0.08, now + 3);
+                    toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 9);
+
+                    osc.connect(toneGain);
+                    toneGain.connect(masterGain);
+
+                    osc.start(now);
+                    osc.stop(now + 9.5);
+                };
+
+                playPadTone();
+                ambientInterval = setInterval(playPadTone, 4500);
+
+            } catch (e) {
+                console.log('오디오 생성 미지원 또는 제약:', e);
+            }
+        }
+
+        function stopAmbientSound() {
+            isAudioPlaying = false;
+            if (ambientInterval) clearInterval(ambientInterval);
+            ambientOscillators.forEach(osc => {
+                try { osc.stop(); } catch(e) {}
+            });
+            ambientOscillators = [];
+            updateAudioUI();
+        }
+
+        function toggleAudio(e) {
+            if (e) e.stopPropagation();
+            if (isAudioPlaying) {
+                stopAmbientSound();
+            } else {
+                startAmbientSound();
+            }
+        }
+
+        function changeVolume(e) {
+            if (e) e.stopPropagation();
+            const val = parseFloat(document.getElementById('volumeSlider').value);
+            if (masterGain && audioCtx) {
+                masterGain.gain.setValueAtTime(val, audioCtx.currentTime);
+            }
+        }
+
+        function updateAudioUI() {
+            const statusText = document.getElementById('audioStatusText');
+            const icon = document.getElementById('audioIcon');
+            if (isAudioPlaying) {
+                statusText.innerText = "음악 켜짐";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`;
+            } else {
+                statusText.innerText = "음악 꺼짐";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>`;
+            }
+        }
+
+        // 1. 상태 체크 화면으로 이동
+        function goToCheck(mode) {
+            currentMode = mode;
+            currentFatigue = 0;
+            currentComfort = 0;
+            resetRatingButtons();
+
+            document.getElementById('stepIntro').classList.add('hidden');
+            document.getElementById('stepTimer').classList.add('hidden');
+            document.getElementById('stepResult').classList.add('hidden');
+            document.getElementById('stepCheck').classList.remove('hidden');
+
+            const badge = document.getElementById('checkStepBadge');
+            const title = document.getElementById('checkTitle');
+            
+            if (mode === 'pre') {
+                badge.innerText = "1/2 휴식 전 체크";
+                badge.className = "inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold";
+                title.innerText = "휴식을 시작하기 전 상태는 어떤가요?";
+            } else {
+                badge.innerText = "2/2 휴식 후 체크";
+                badge.className = "inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold";
+                title.innerText = "10분 휴식 후 상태는 어떻게 바뀌었나요?";
+            }
+        }
+
+        // 2. 점수 선택 버튼 클릭 handler
+        function setScore(type, val) {
+            if (type === 'fatigue') {
+                currentFatigue = val;
+                updateButtonGroup('fatigueGroup', val);
+            } else if (type === 'comfort') {
+                currentComfort = val;
+                updateButtonGroup('comfortGroup', val);
+            }
+
+            // 두 항목 모두 선택되었을 때만 제출 버튼 활성화
+            const submitBtn = document.getElementById('btnSubmitCheck');
+            if (currentFatigue > 0 && currentComfort > 0) {
+                submitBtn.disabled = false;
+                submitBtn.className = "w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl shadow-md transition-all transform active:scale-95 cursor-pointer";
+            }
+        }
+
+        // UI 버튼 선택 표시 업데이트
+        function updateButtonGroup(groupId, selectedVal) {
+            const container = document.getElementById(groupId);
+            const buttons = container.querySelectorAll('.rating-btn');
+            buttons.forEach((btn, index) => {
+                if (index + 1 === selectedVal) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function resetRatingButtons() {
+            updateButtonGroup('fatigueGroup', 0);
+            updateButtonGroup('comfortGroup', 0);
+            const submitBtn = document.getElementById('btnSubmitCheck');
+            submitBtn.disabled = true;
+            submitBtn.className = "w-full py-4 bg-gray-300 text-white font-semibold rounded-2xl shadow transition-all cursor-not-allowed";
+        }
+
+        // 3. 점수 제출 처리
+        function submitCheck() {
+            if (currentMode === 'pre') {
+                scores.preFatigue = currentFatigue;
+                scores.preComfort = currentComfort;
+                startTimer();
+            } else {
+                scores.postFatigue = currentFatigue;
+                scores.postComfort = currentComfort;
+                showResults();
+            }
+        }
+
+        // 4. 타이머 시작 (어두운 무자극 모드 전환)
+        function startTimer() {
+            document.getElementById('stepCheck').classList.add('hidden');
+            document.getElementById('stepTimer').classList.remove('hidden');
+            document.getElementById('stepTimer').classList.add('flex');
+            document.getElementById('appBody').classList.add('rest-mode-active');
+            document.getElementById('appFooter').classList.add('opacity-20');
+
+            remainingSeconds = TOTAL_SECONDS;
+            updateTimerDisplay();
+
+            // 타이머 시작 시 편안한 앰비언트 음악 자동 시작
+            startAmbientSound();
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateTimerDisplay();
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    endTimer();
+                }
+            }, 1000);
+        }
+
+        // 남은 시간 텍스트 업데이트
+        function updateTimerDisplay() {
+            const min = Math.floor(remainingSeconds / 60);
+            const sec = remainingSeconds % 60;
+            document.getElementById('timeText').innerText = 
+                `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        }
+
+        // 화면 클릭 시 3초간 타이머 잠시 보여주기
+        function peekTimer(event) {
+            // 버튼 터치인 경우 타이머 엿보기 동작 실행하지 않음
+            if (event && event.target && event.target.tagName === 'BUTTON') return;
+
+            const hint = document.getElementById('timerHint');
+            const display = document.getElementById('timerDisplay');
+
+            hint.classList.add('hidden');
+            display.classList.remove('hidden');
+
+            clearTimeout(peekTimeout);
+            peekTimeout = setTimeout(() => {
+                display.classList.add('hidden');
+                hint.classList.remove('hidden');
+            }, 3000);
+        }
+
+        // 타이머 조기 종료 처리
+        function stopTimerEarly(event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
+            clearInterval(timerInterval);
+            endTimer();
+        }
+
+        // 타이머 종료 후 조치
+        function endTimer() {
+            stopAmbientSound(); // 소리 끄기
+            document.getElementById('appBody').classList.remove('rest-mode-active');
+            document.getElementById('appFooter').classList.remove('opacity-20');
+            document.getElementById('stepTimer').classList.add('hidden');
+            document.getElementById('stepTimer').classList.remove('flex');
+            goToCheck('post');
+        }
+
+        // 5. 최종 결과 보여주기
+        function showResults() {
+            document.getElementById('stepCheck').classList.add('hidden');
+            document.getElementById('stepResult').classList.remove('hidden');
+
+            // 점수 바인딩
+            document.getElementById('resPreFatigue').innerText = scores.preFatigue;
+            document.getElementById('resPostFatigue').innerText = scores.postFatigue;
+            document.getElementById('resPreComfort').innerText = scores.preComfort;
+            document.getElementById('resPostComfort').innerText = scores.postComfort;
+
+            // 변화량 계산 및 문구 설정
+            const fatigueDiff = scores.postFatigue - scores.preFatigue;
+            const fatigueDiffEl = document.getElementById('fatigueDiff');
+            if (fatigueDiff < 0) {
+                fatigueDiffEl.innerText = `${Math.abs(fatigueDiff)}점 감소 (개선됨)`;
+                fatigueDiffEl.className = "text-[10px] text-emerald-600 font-medium mt-1 block";
+            } else if (fatigueDiff > 0) {
+                fatigueDiffEl.innerText = `${fatigueDiff}점 증가`;
+                fatigueDiffEl.className = "text-[10px] text-amber-600 font-medium mt-1 block";
+            } else {
+                fatigueDiffEl.innerText = `변화 없음`;
+                fatigueDiffEl.className = "text-[10px] text-gray-400 font-medium mt-1 block";
+            }
+
+            const comfortDiff = scores.postComfort - scores.preComfort;
+            const comfortDiffEl = document.getElementById('comfortDiff');
+            if (comfortDiff > 0) {
+                comfortDiffEl.innerText = `${comfortDiff}점 증가 (편안해짐)`;
+                comfortDiffEl.className = "text-[10px] text-emerald-600 font-medium mt-1 block";
+            } else if (comfortDiff < 0) {
+                comfortDiffEl.innerText = `${Math.abs(comfortDiff)}점 감소`;
+                comfortDiffEl.className = "text-[10px] text-amber-600 font-medium mt-1 block";
+            } else {
+                comfortDiffEl.innerText = `변화 없음`;
+                comfortDiffEl.className = "text-[10px] text-gray-400 font-medium mt-1 block";
+            }
+        }
+
+        // 6. 전체 완료 처리 (메인으로 리셋)
+        function finishSession() {
+            // 기록은 선택사항이며 필요시 로컬스토리지에 저장 가능 (개인정보 없음)
+            const thought = document.getElementById('thoughtInput').value.trim();
+            if (thought) {
+                try {
+                    const logs = JSON.parse(localStorage.getItem('쉼표_기록') || '[]');
+                    logs.push({
+                        date: new Date().toLocaleDateString(),
+                        thought: thought,
+                        fatigueBefore: scores.preFatigue,
+                        fatigueAfter: scores.postFatigue
+                    });
+                    localStorage.setItem('쉼표_기록', JSON.stringify(logs.slice(-5))); // 최근 5개만 보관
+                } catch(e) {}
+            }
+
+            // 입력값 초기화
+            document.getElementById('thoughtInput').value = '';
+            
+            // 메인 화면으로 전환
+            document.getElementById('stepResult').classList.add('hidden');
+            document.getElementById('stepIntro').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
